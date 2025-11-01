@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>温馨提示</title>
+    <style>
+        /* 基础窗口样式 */
+        .tip-window {
+            position: absolute;
+            width: 300px;
+            height: 90px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+            z-index: 100; /* 确保窗口在最上层 */
+        }
+
+        /* 窗口标题样式 */
+        .window-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+        }
+
+        /* 提示文本样式 */
+        .tip-text {
+            font-size: 16px;
+            text-align: center;
+            line-height: 50px; /* 垂直居中 */
+        }
+
+        /* 最终窗口样式 */
+        .final-window {
+            position: fixed;
+            width: 300px;
+            height: 90px;
+            background-color: lightpink;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200; /* 确保在所有窗口之上 */
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 提示文本数组（与Python代码一致）
+        const tips = [
+            '多喝水哦~', '保持微笑呀', '每天都要元气满满',
+            '记得吃水果', '保持好心情', '好好爱自己', '我想你了',
+            '梦想成真', '期待下一次见面', '顺顺利利', '早点休息',
+            '愿所有烦恼都消失', '别熬夜', '今天过得开心嘛', '天冷了，多穿衣服'
+        ];
+
+        // 背景颜色数组（与Python代码一致）
+        const bgColors = [
+            'lightpink', 'skyblue', 'lightgreen', 'lavender',
+            'lightyellow', 'plum', 'coral', 'bisque', 'aquamarine',
+            'mistyrose', 'honeydew', 'lavenderblush', 'oldlace'
+        ];
+
+        // 存储所有生成的窗口
+        const allWindows = [];
+
+        // 创建单个提示窗口
+        function createTipWindow() {
+            // 创建窗口容器
+            const windowDiv = document.createElement('div');
+            windowDiv.className = 'tip-window';
+
+            // 随机位置（范围参考Python代码）
+            const x = Math.floor(Math.random() * 1530) - 30; // -30 到 1500
+            const y = Math.floor(Math.random() * 2420) - 20; // -20 到 2400
+            windowDiv.style.left = `${x}px`;
+            windowDiv.style.top = `${y}px`;
+
+            // 随机背景色
+            const bgColor = bgColors[Math.floor(Math.random() * bgColors.length)];
+            windowDiv.style.backgroundColor = bgColor;
+
+            // 窗口内容（标题+提示文本）
+            windowDiv.innerHTML = `
+                <div class="window-title">温馨提示</div>
+                <div class="tip-text">${tips[Math.floor(Math.random() * tips.length)]}</div>
+            `;
+
+            // 添加到页面并记录
+            document.body.appendChild(windowDiv);
+            allWindows.push(windowDiv);
+        }
+
+        // 逐个关闭窗口
+        function closeWindowsOneByOne(index = 0, delay = 10) {
+            if (index < allWindows.length) {
+                const windowDiv = allWindows[index];
+                if (windowDiv.parentNode) { // 确保窗口仍存在
+                    document.body.removeChild(windowDiv);
+                }
+                // 延迟递归关闭下一个
+                setTimeout(() => closeWindowsOneByOne(index + 1, delay), delay);
+            } else {
+                // 所有窗口关闭后显示最终窗口
+                createFinalWindow();
+            }
+        }
+
+        // 创建最终窗口（我想你了）
+        function createFinalWindow() {
+            const finalWindow = document.createElement('div');
+            finalWindow.className = 'final-window';
+            finalWindow.textContent = '我想你了';
+
+            // 居中显示
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const left = (screenWidth - 300) / 2;
+            const top = (screenHeight - 90) / 2;
+            finalWindow.style.left = `${left}px`;
+            finalWindow.style.top = `${top}px`;
+
+            document.body.appendChild(finalWindow);
+        }
+
+        // 主逻辑
+        function main() {
+            // 生成200个窗口（间隔10ms生成一个，避免性能问题）
+            let count = 0;
+            const interval = setInterval(() => {
+                createTipWindow();
+                count++;
+                if (count >= 200) {
+                    clearInterval(interval);
+                    // 2秒后开始逐个关闭窗口
+                    setTimeout(() => closeWindowsOneByOne(), 2000);
+                }
+            }, 30);
+        }
+
+        // 启动程序
+        main();
+    </script>
+</body>
+</html>
